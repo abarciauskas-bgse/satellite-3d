@@ -7,7 +7,7 @@ import numpy
 
 from rasterio.io import MemoryFile
 
-from rio_tiler import main
+from rio_tiler.io import cogeo
 from rio_tiler_mvt.mvt import encoder as mvtEncoder
 
 from urllib.request import urlopen
@@ -36,9 +36,10 @@ def tiler(
         tilesize = int(tilesize)
 
     address = f"https://elevation-tiles-prod.s3.amazonaws.com/geotiff/{z}/{x}/{y}.tif"
-    tile, mask = main.tile(address, x, y, z, tilesize=tilesize)
+    tile, mask = cogeo.tile(address, x, y, z, tilesize=tilesize)
 
-    token = os.environ["MAPBOX_ACCESS_TOKEN"]
+    #token = os.environ["MAPBOX_ACCESS_TOKEN"]
+    token = 'pk.eyJ1IjoiYWltZWViIiwiYSI6ImNqZjVwNXMwNzExY3gycW44dGdyenFxaGoifQ.jd1Kgk4V2276G97KKcXZBA'
     address = f"https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg?access_token={token}"
     imgdata = urlopen(address).read()
     with MemoryFile(imgdata) as memfile:

@@ -66,54 +66,56 @@
     <div id='map'></div>
 
 <script>
-mapboxgl.accessToken = '{Your Mapbox Token here}'
+mapboxgl.accessToken = 'pk.eyJ1IjoiYWltZWViIiwiYSI6ImNqZjVwNXMwNzExY3gycW44dGdyenFxaGoifQ.jd1Kgk4V2276G97KKcXZBA'
 
 var map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/basic-v9',
-  center: [-119.5591, 37.715],
+  center: [-120.92726135253906, 35.46099090576172],
   zoom: 9,
   minZoom: 1,
   maxZoom: 14,
   attributionControl: true,
   hash: true,
+  pitch: 120
 })
 
-var endpoint = '{Your API Gateway endpoint here}'
+var endpoint = 'http://127.0.0.1:8000/{z}/{x}/{y}.pbf'
 
 const sMin = 0
-const sMax = 10000
+const sMax = 100
 const exag = 2.5
 
 map.on('load', () => {
+  console.log('loaded');
   map.addSource('mvt', {
     type: 'vector',
     tiles: [endpoint],
-    minzoom: 9,
+    minzoom: 1,
     maxzoom: 14
   })
 
   map.addLayer({
     id: 'mvt',
     source: 'mvt',
-    'source-layer': 'satellite-3d',
+    'source-layer': 'dem_h',
     type: 'fill-extrusion',
     paint: {
-      'fill-extrusion-opacity': 1,
+      'fill-extrusion-opacity': 0.5,
       'fill-extrusion-height': [
         'interpolate',
         ['linear'],
-        ['to-number', ['get', 'elevation']],
+        ['to-number', ['get', 'dem_h']],
         sMin, 0,
         sMax, sMax * exag
       ],
-      // 'fill-extrusion-height': ['to-number', ['get', 'elevation']],
-      'fill-extrusion-color': [
-        "rgb",
-        ['to-number', ['get', 'R']],
-        ['to-number', ['get', 'G']],
-        ['to-number', ['get', 'B']]
-      ]
+      'fill-extrusion-color': 'red'
+      //'fill-extrusion-color': [
+      //  "rgb",
+      //  ['to-number', ['get', 'dem_h']],
+      //  ['to-number', ['get', 'dem_h']],
+      //  ['to-number', ['get', 'dem_h']]
+      //]
     }
   })
 })
