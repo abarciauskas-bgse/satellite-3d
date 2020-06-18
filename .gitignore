@@ -106,3 +106,6 @@ ENV/
 .serverless/
 node_modules/
 package.zip
+*.h5
+*.tif
+
